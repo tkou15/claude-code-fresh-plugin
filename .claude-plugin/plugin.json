@@ -1,0 +1,12 @@
+{
+  "name": "fresh-editor",
+  "description": "Open files in the Fresh terminal editor from Claude Code",
+  "version": "1.0.0",
+  "author": {
+    "name": "k1t"
+  },
+  "homepage": "https://github.com/sinelaw/fresh",
+  "repository": "https://github.com/sinelaw/fresh.git",
+  "license": "MIT",
+  "keywords": ["fresh", "editor", "terminal"]
+}
