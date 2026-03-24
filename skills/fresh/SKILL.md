@@ -13,16 +13,18 @@ The user invokes this skill with `/fresh` or `/fresh <path>`.
 
 ## Instructions
 
+**IMPORTANT**: Fresh is an interactive terminal editor that requires a real TTY. Do NOT run `fresh` via the Bash tool — it will fail with "Device not configured".
+
 1. First, check if `fresh` is installed:
 
 ```bash
 which fresh
 ```
 
-2. If `fresh` is installed, open the editor:
+2. If `fresh` is installed, tell the user to run it with the `!` prefix (which executes in their shell session with full TTY access):
 
-- If the user provided arguments: run `fresh $ARGUMENTS`
-- If no arguments: run `fresh .` to open the current directory
+- If the user provided arguments: suggest `! fresh $ARGUMENTS`
+- If no arguments: suggest `! fresh .` to open the current directory
 
 3. If `fresh` is NOT installed, show installation instructions:
 
