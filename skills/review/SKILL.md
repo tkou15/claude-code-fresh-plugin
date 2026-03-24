@@ -24,19 +24,34 @@ The user invokes this skill with `/fresh-editor:review` or `/fresh-editor:review
    - Error handling gaps
    - Code style and best practices violations
 
-3. **Check if Fresh is installed**:
+3. **Check if Fresh is installed and if a session is running**:
 
 ```bash
-which fresh
+which fresh && fresh --cmd session list
 ```
 
-4. **Present findings**: For each issue found, generate a Fresh command using the `file:line-line@"message"` syntax. Format each finding as:
+4. **If a Fresh session is running** — open findings directly via the session (no TTY needed):
 
-```
-! fresh 'path/to/file.ext:START_LINE-END_LINE@"Brief description of the issue and suggested fix"'
+For each issue found, run:
+
+```bash
+fresh --cmd session open-file . 'path/to/file.ext:START_LINE-END_LINE@"Brief description of the issue"'
 ```
 
-Example output:
+Use `--wait` to open findings one at a time, waiting for the user to dismiss each popup:
+
+```bash
+fresh --cmd session open-file . 'path/to/file.ext:START_LINE-END_LINE@"Issue description"' --wait
+```
+
+5. **If no Fresh session is running** — present findings as commands for the user to run manually:
+
+First, suggest starting a session:
+```
+! fresh -a
+```
+
+Then present each finding as a `! fresh` command:
 
 ```
 Found 3 issues:
@@ -51,11 +66,11 @@ Found 3 issues:
    ! fresh 'src/main.rs:3@"Remove unused import"'
 ```
 
-5. **Important notes**:
-   - Do NOT run the `fresh` commands via the Bash tool — Fresh requires a real TTY
-   - Always use the `! fresh` prefix so the user can run it in their shell session
-   - Wrap the file argument in single quotes to prevent shell expansion of the `@"..."` syntax
+6. **Important notes**:
+   - When using `session open-file`, you CAN run it via the Bash tool (no TTY needed)
+   - When no session exists, use the `! fresh` prefix for the user to run manually
+   - Wrap file arguments in single quotes to prevent shell expansion of the `@"..."` syntax
    - Keep popup messages concise (1-2 sentences) — they appear as markdown popups in the editor
    - If no issues are found, inform the user that the code looks good
 
-6. **If Fresh is NOT installed**, show installation instructions and present findings as a plain text list instead.
+7. **If Fresh is NOT installed**, show installation instructions and present findings as a plain text list instead.

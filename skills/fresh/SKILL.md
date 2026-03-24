@@ -13,20 +13,39 @@ The user invokes this skill with `/fresh` or `/fresh <path>`.
 
 ## Instructions
 
-**IMPORTANT**: Fresh is an interactive terminal editor that requires a real TTY. Do NOT run `fresh` via the Bash tool — it will fail with "Device not configured".
-
 1. First, check if `fresh` is installed:
 
 ```bash
 which fresh
 ```
 
-2. If `fresh` is installed, tell the user to run it with the `!` prefix (which executes in their shell session with full TTY access):
+If not installed, show installation instructions (see bottom of this file) and stop.
+
+2. Check if a Fresh session is already running:
+
+```bash
+fresh --cmd session list
+```
+
+3. **If a session is running**: Open the file directly via the session (no TTY needed):
+
+```bash
+fresh --cmd session open-file . $ARGUMENTS
+```
+
+If no arguments were provided, suggest the user attach to the session:
+```
+! fresh -a
+```
+
+4. **If no session is running**: Fresh requires a real TTY and cannot run via the Bash tool. Tell the user to run it with the `!` prefix (which executes in their shell session with full TTY access):
 
 - If the user provided arguments: suggest `! fresh $ARGUMENTS`
 - If no arguments: suggest `! fresh .` to open the current directory
 
-3. If `fresh` is NOT installed, show installation instructions:
+Once a session is started, subsequent file opens can be done automatically via `fresh --cmd session open-file`.
+
+## Installation instructions
 
 **macOS/Linux (Homebrew):**
 ```
