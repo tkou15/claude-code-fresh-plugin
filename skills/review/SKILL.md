@@ -24,53 +24,60 @@ The user invokes this skill with `/fresh-editor:review` or `/fresh-editor:review
    - Error handling gaps
    - Code style and best practices violations
 
-3. **Check if Fresh is installed and if a session is running**:
+3. **Check if Fresh is installed and get the session name**:
 
 ```bash
 which fresh && fresh --cmd session list
 ```
 
-4. **If a Fresh session is running** — open findings directly via the session (no TTY needed):
+The session list outputs lines like: `/Users/ko1 (Users_ko1)` — the name in parentheses is the session name.
 
-For each issue found, run:
-
-```bash
-fresh --cmd session open-file . 'path/to/file.ext:START_LINE-END_LINE@"Brief description of the issue"'
-```
-
-Use `--wait` to open findings one at a time, waiting for the user to dismiss each popup:
-
-```bash
-fresh --cmd session open-file . 'path/to/file.ext:START_LINE-END_LINE@"Issue description"' --wait
-```
-
-5. **If no Fresh session is running** — present findings as commands for the user to run manually:
-
-First, suggest starting a session:
-```
-! fresh -a
-```
-
-Then present each finding as a `! fresh` command:
+4. **Format findings** using Fresh's annotation syntax:
 
 ```
-Found 3 issues:
-
-1. **SQL Injection** in `src/db.rs:45-52`
-   ! fresh 'src/db.rs:45-52@"SQL injection risk: use prepared statements instead of string concatenation"'
-
-2. **Missing error handling** in `src/api.rs:23`
-   ! fresh 'src/api.rs:23@"unwrap() on network call - handle the error case"'
-
-3. **Unused import** in `src/main.rs:3`
-   ! fresh 'src/main.rs:3@"Remove unused import"'
+fresh --cmd session open-file SESSION_NAME 'path/to/file.ext:START_LINE-END_LINE@"Issue description"'
 ```
+
+**IMPORTANT**: Use the actual session name (e.g., `Users_ko1`), NOT `.`.
+
+5. **Open findings** — choose based on environment:
+
+   **a) If cmux is available** (`$CMUX_SOCKET_PATH` is set) and a session is running:
+
+   Send each finding directly to the Fresh pane:
+
+   ```bash
+   cmux send --surface <fresh-surface-id> "fresh --cmd session open-file SESSION_NAME 'src/db.rs:45-52@\"SQL injection risk\"'"
+   cmux send-key --surface <fresh-surface-id> Enter
+   ```
+
+   If no session is running, start one first:
+
+   ```bash
+   cmux new-split right
+   # Note the surface ID
+   cmux send --surface <surface-id> "fresh -a"
+   cmux send-key --surface <surface-id> Enter
+   ```
+
+   **b) Otherwise** — present findings as commands for the user:
+
+   ```
+   Found 3 issues:
+
+   1. **SQL Injection** in `src/db.rs:45-52`
+      ! fresh --cmd session open-file SESSION_NAME 'src/db.rs:45-52@"SQL injection risk: use prepared statements"'
+
+   2. **Missing error handling** in `src/api.rs:23`
+      ! fresh --cmd session open-file SESSION_NAME 'src/api.rs:23@"unwrap() on network call - handle the error"'
+   ```
+
+   If no session is running, suggest starting one first: `! fresh -a`
 
 6. **Important notes**:
-   - When using `session open-file`, you CAN run it via the Bash tool (no TTY needed)
-   - When no session exists, use the `! fresh` prefix for the user to run manually
-   - Wrap file arguments in single quotes to prevent shell expansion of the `@"..."` syntax
-   - Keep popup messages concise (1-2 sentences) — they appear as markdown popups in the editor
+   - Wrap file arguments in single quotes to prevent shell expansion of `@"..."`
+   - When using cmux send, escape inner double quotes with `\"`
+   - Keep popup messages concise (1-2 sentences)
    - If no issues are found, inform the user that the code looks good
 
-7. **If Fresh is NOT installed**, show installation instructions and present findings as a plain text list instead.
+7. **If Fresh is NOT installed**, show installation instructions and present findings as a plain text list.
