@@ -48,14 +48,16 @@ This outputs lines like: `/Users/ko1 (Users_ko1)` — the name in parentheses (e
 
 4. **If no session is running**, start one:
 
-   **a) If cmux is available** — open Fresh in a right split pane:
+   **a) If cmux is available** — open Fresh in a right split pane at the current working directory:
 
    ```bash
    cmux new-split right
    # Note the surface ID from the output (e.g., "OK surface:11")
-   cmux send --surface <surface-id> "fresh -a"
+   cmux send --surface <surface-id> "cd $(pwd) && fresh -a"
    cmux send-key --surface <surface-id> Enter
    ```
+
+   **IMPORTANT**: Use `cd $(pwd)` to ensure Fresh starts in the same directory as Claude Code. This makes the session name match the working directory.
 
    Wait a moment, then open the file via the session (step 3a).
 

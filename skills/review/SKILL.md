@@ -51,12 +51,12 @@ fresh --cmd session open-file SESSION_NAME 'path/to/file.ext:START_LINE-END_LINE
    cmux send-key --surface <fresh-surface-id> Enter
    ```
 
-   If no session is running, start one first:
+   If no session is running, start one first in the current working directory:
 
    ```bash
    cmux new-split right
    # Note the surface ID
-   cmux send --surface <surface-id> "fresh -a"
+   cmux send --surface <surface-id> "cd $(pwd) && fresh -a"
    cmux send-key --surface <surface-id> Enter
    ```
 
