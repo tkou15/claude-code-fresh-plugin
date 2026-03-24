@@ -1,8 +1,6 @@
 ---
-name: fresh
 description: Open files or directories in the Fresh terminal text editor. Use when the user wants to edit files in Fresh.
 disable-model-invocation: true
-allowed-tools: Bash
 ---
 
 # Fresh Editor
