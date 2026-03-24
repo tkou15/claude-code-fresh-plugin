@@ -1,6 +1,6 @@
 # Fresh Editor Plugin for Claude Code
 
-A [Claude Code](https://claude.ai/claude-code) plugin that lets you open files and directories in the [Fresh](https://github.com/sinelaw/fresh) terminal text editor.
+A [Claude Code](https://claude.ai/claude-code) plugin that integrates the [Fresh](https://github.com/sinelaw/fresh) terminal text editor with Claude Code.
 
 ## Prerequisites
 
@@ -24,18 +24,36 @@ See the [Fresh installation guide](https://github.com/sinelaw/fresh#installation
 In Claude Code, install this plugin:
 
 ```
-/install-plugin https://github.com/<owner>/claude-code-fresh-plugin
+/install-plugin https://github.com/tkou15/claude-code-fresh-plugin
 ```
 
-## Usage
+## Skills
 
-Once installed, use the `/fresh` command in Claude Code:
+### `/fresh-editor:fresh` — Open files in Fresh
 
 ```
-/fresh                  # Open current directory
-/fresh src/main.rs      # Open a specific file
-/fresh src/             # Open a directory
+/fresh-editor:fresh                  # Open current directory
+/fresh-editor:fresh src/main.rs      # Open a specific file
+/fresh-editor:fresh src/             # Open a directory
 ```
+
+### `/fresh-editor:review` — Code review with Fresh annotations
+
+Claude analyzes your code and presents findings as Fresh popup annotations. Each issue links directly to the relevant line in the editor.
+
+```
+/fresh-editor:review                 # Review recently changed files
+/fresh-editor:review src/auth.rs     # Review a specific file
+/fresh-editor:review src/            # Review a directory
+```
+
+Example output:
+
+```
+! fresh 'src/auth.rs:45-52@"SQL injection risk: use prepared statements"'
+```
+
+Fresh opens the file with the lines selected and a popup showing the issue description.
 
 ## License
 
