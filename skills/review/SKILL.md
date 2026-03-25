@@ -1,7 +1,7 @@
 ---
 description: Review code and open findings in the Fresh editor with inline popup annotations. Use when the user wants a code review with results shown directly in Fresh.
 disable-model-invocation: true
-allowed-tools: Read, Grep, Glob, Bash(fresh:*), Bash(which:*), Bash(git diff:*), Bash(git log:*), Bash(cmux:*)
+allowed-tools: Read, Grep, Glob, Bash(fresh:*), Bash(which:*), Bash(git diff:*), Bash(git log:*), Bash(cmux:*), Bash(*/scripts/fresh-ensure-session.sh:*), Bash(*/scripts/fresh-open-finding.sh:*)
 context: fork
 ---
 
@@ -28,60 +28,41 @@ The user invokes this skill with `/fresh-editor:review` or `/fresh-editor:review
    - Error handling gaps
    - Code style and best practices violations
 
-3. **Check if Fresh is installed and get the session name**:
+3. **Ensure Fresh is running** by calling the helper script.
+
+First, locate the plugin's scripts directory. Use the Glob tool to find `**/fresh-ensure-session.sh` — it will be in a `scripts/` directory inside the plugin (either under `~/.claude/plugins/` or a local dev path like `~/work/`). Save the directory path as `SCRIPT_DIR`.
+
+Then run:
+```bash
+# Returns: line 1 = SESSION_NAME, line 2 = SURFACE_ID (may be empty)
+"$SCRIPT_DIR/fresh-ensure-session.sh" "$(pwd)"
+```
+
+Save the output:
+- `SESSION_NAME` — the Fresh session name (first line)
+- `SURFACE_ID` — the cmux surface for the Fresh pane (second line, may be empty)
+
+4. **Send each finding** using the helper script:
 
 ```bash
-which fresh && fresh --cmd session list
+"$SCRIPT_DIR/fresh-open-finding.sh" SESSION_NAME 'path/to/file.ext:START_LINE-END_LINE@"Issue description"' SURFACE_ID
 ```
 
-The session list outputs lines like: `/Users/ko1 (Users_ko1)` — the name in parentheses is the session name.
+- Keep popup messages concise (1-2 sentences)
+- `SURFACE_ID` is optional — omit if empty
 
-4. **Format findings** using Fresh's annotation syntax:
+5. **Fallback** — if the ensure-session script fails (exit code non-zero), present findings as text:
 
 ```
-fresh --cmd session open-file SESSION_NAME 'path/to/file.ext:START_LINE-END_LINE@"Issue description"'
+Found N issues:
+
+1. **Issue title** in `src/file.rs:45-52`
+   Description of the issue.
+
+2. **Issue title** in `src/other.rs:23`
+   Description of the issue.
 ```
 
-**IMPORTANT**: Use the actual session name (e.g., `Users_ko1`), NOT `.`.
+If Fresh is not installed, also show: `Install with: brew install fresh-editor`
 
-5. **Open findings** — choose based on environment:
-
-   **a) If cmux is available** (`$CMUX_SOCKET_PATH` is set) and a session is running:
-
-   Send each finding directly to the Fresh pane:
-
-   ```bash
-   cmux send --surface <fresh-surface-id> "fresh --cmd session open-file SESSION_NAME 'src/db.rs:45-52@\"SQL injection risk\"'"
-   cmux send-key --surface <fresh-surface-id> Enter
-   ```
-
-   If no session is running, start one first in the current working directory:
-
-   ```bash
-   cmux new-split right
-   # Note the surface ID
-   cmux send --surface <surface-id> "cd $(pwd) && fresh -a"
-   cmux send-key --surface <surface-id> Enter
-   ```
-
-   **b) Otherwise** — present findings as commands for the user:
-
-   ```
-   Found 3 issues:
-
-   1. **SQL Injection** in `src/db.rs:45-52`
-      ! fresh --cmd session open-file SESSION_NAME 'src/db.rs:45-52@"SQL injection risk: use prepared statements"'
-
-   2. **Missing error handling** in `src/api.rs:23`
-      ! fresh --cmd session open-file SESSION_NAME 'src/api.rs:23@"unwrap() on network call - handle the error"'
-   ```
-
-   If no session is running, suggest starting one first: `! fresh -a`
-
-6. **Important notes**:
-   - Wrap file arguments in single quotes to prevent shell expansion of `@"..."`
-   - When using cmux send, escape inner double quotes with `\"`
-   - Keep popup messages concise (1-2 sentences)
-   - If no issues are found, inform the user that the code looks good
-
-7. **If Fresh is NOT installed**, show installation instructions and present findings as a plain text list.
+6. **If no issues are found**, inform the user that the code looks good.
