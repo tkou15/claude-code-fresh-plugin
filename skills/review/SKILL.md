@@ -1,9 +1,13 @@
 ---
 description: Review code and open findings in the Fresh editor with inline popup annotations. Use when the user wants a code review with results shown directly in Fresh.
 disable-model-invocation: true
+allowed-tools: Read, Grep, Glob, Bash(fresh:*), Bash(which:*), Bash(git diff:*), Bash(git log:*), Bash(cmux:*)
+context: fork
 ---
 
 # Code Review with Fresh
+
+**CRITICAL**: This is a READ-ONLY review skill. Do NOT edit, modify, or write to any source files. Present all findings as Fresh editor commands or text output only — never modify the source code.
 
 Review code and present findings in [Fresh](https://github.com/sinelaw/fresh) using its `@"message"` popup annotation feature.
 
