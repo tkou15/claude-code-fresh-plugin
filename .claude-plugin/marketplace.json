@@ -1,0 +1,11 @@
+{
+  "name": "fresh-editor-marketplace",
+  "owner": { "name": "k1t" },
+  "plugins": [
+    {
+      "name": "fresh-editor",
+      "source": ".",
+      "description": "Open files in the Fresh terminal editor and review code with inline annotations"
+    }
+  ]
+}

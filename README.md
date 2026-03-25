@@ -21,10 +21,17 @@ See the [Fresh installation guide](https://github.com/sinelaw/fresh#installation
 
 ## Installation
 
-In Claude Code, install this plugin:
+### Direct install
 
 ```
-/install-plugin https://github.com/tkou15/claude-code-fresh-plugin
+/install-plugin https://github.com/imk1t/claude-code-fresh-plugin
+```
+
+### Via Marketplace
+
+```
+/plugin marketplace add imk1t/claude-code-fresh-plugin
+/plugin install fresh-editor@fresh-editor-marketplace
 ```
 
 ## Skills
