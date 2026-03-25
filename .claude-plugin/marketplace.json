@@ -4,7 +4,7 @@
   "plugins": [
     {
       "name": "fresh-editor",
-      "source": ".",
+      "source": "./",
       "description": "Open files in the Fresh terminal editor and review code with inline annotations"
     }
   ]
