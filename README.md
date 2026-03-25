@@ -4,6 +4,8 @@ A [Claude Code](https://claude.ai/claude-code) plugin that integrates the [Fresh
 
 ## Prerequisites
 
+### Fresh (required)
+
 Install Fresh using one of the following methods:
 
 ```bash
@@ -18,6 +20,14 @@ cargo install fresh-editor
 ```
 
 See the [Fresh installation guide](https://github.com/sinelaw/fresh#installation) for more options.
+
+### cmux (optional)
+
+When cmux is available (e.g. Claude Code desktop app), the plugin can automatically start Fresh sessions and open files in a split pane. Without cmux, start Fresh manually before using the plugin:
+
+```bash
+fresh .
+```
 
 ## Installation
 
