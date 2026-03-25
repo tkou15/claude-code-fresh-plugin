@@ -5,8 +5,8 @@
   "author": {
     "name": "k1t"
   },
-  "homepage": "https://github.com/sinelaw/fresh",
-  "repository": "https://github.com/sinelaw/fresh.git",
+  "homepage": "https://github.com/imk1t/claude-code-fresh-plugin",
+  "repository": "https://github.com/imk1t/claude-code-fresh-plugin.git",
   "license": "MIT",
   "keywords": ["fresh", "editor", "terminal"]
 }
